@@ -5,7 +5,8 @@ const { printObject } = require("./utils");
   try {
     // find files of folder stores
     const result = await executeFindFiles("stores");
-    printObject(result);
+
+    // printObject(result);
   } catch (e) {
     console.log("error", e);
   }
