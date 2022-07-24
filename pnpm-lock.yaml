@@ -4,11 +4,13 @@ specifiers:
   axios: ^0.27.2
   form-data: ^4.0.0
   fs-extra: ^10.1.0
+  python-shell: ^3.0.1
 
 dependencies:
   axios: 0.27.2
   form-data: 4.0.0
   fs-extra: 10.1.0
+  python-shell: 3.0.1
 
 packages:
 
@@ -87,6 +89,11 @@ packages:
     engines: {node: '>= 0.6'}
     dependencies:
       mime-db: 1.52.0
+    dev: false
+
+  /python-shell/3.0.1:
+    resolution: {integrity: sha512-TWeotuxe1auhXa5bGRScxnc2J+0r41NBntSa6RYZtMBLtAEsvCboKrEbW6DvASosWQepVkhZZlT3B5Ei766G+Q==}
+    engines: {node: '>=0.10'}
     dev: false
 
   /universalify/2.0.0:

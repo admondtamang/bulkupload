@@ -5,9 +5,11 @@ const { moveDirectory, printObject } = require("./utils");
 const { default: axios } = require("axios");
 const FormData = require("form-data");
 const { exit } = require("process");
+const executePython = require("./utils/executePython");
+const { base64_encode } = require("./createBase64");
 
+var attachments = [];
 let result = [],
-  attachments = [],
   document = {},
   count = 0;
 
@@ -20,8 +22,13 @@ const url = "http://localhost:8181/api/bpm-document";
  * @param {String} folderName
  */
 async function findFiles(folderName) {
+  let items = [];
   // list folders
-  let items = await fs.readdir(folderName, { withFileTypes: true });
+  try {
+    items = await fs.readdir(folderName, { withFileTypes: true });
+  } catch (error) {
+    console.log("not a folder", error);
+  }
 
   // donot include file extension
   items = items.filter((row) => !excludeFileTypes.includes(row.name));
@@ -34,8 +41,20 @@ async function findFiles(folderName) {
       const filePath = await path.join(folderName, item.name);
 
       // file found with following extension
-      if (path.extname(item.name) === ".json") {
-        attachments.push(filePath);
+      if (path.extname(item.name) === ".pdf") {
+        const encoded_data = base64_encode(filePath);
+
+        const attach = {
+          src: "data:application/pdf;base64,",
+          type: "application/pdf",
+          name: item.name,
+          file: {
+            originalname: item.name,
+            size: 12654,
+            mimetype: "application/pdf",
+          },
+        };
+        attachments.push(attach);
         result[count] = { ...document, attachments };
 
         console.log(
@@ -49,27 +68,27 @@ async function findFiles(folderName) {
   );
 
   // Send request to DMS
-  const form_data = new FormData();
-  attachments.map((file) => {
-    form_data.append("files", fs.createReadStream(file));
-  });
+  // const form_data = new FormData();
+  // attachments.map((file) => {
+  //   form_data.append("files", fs.createReadStream(file));
+  // });
 
-  try {
-    const { data } = await axios({
-      method: "post",
-      url: url,
-      data: form_data,
-      headers: form_data.getHeaders(),
-    });
-    console.log(data);
-  } catch (error) {
-    console.log("=============================");
-    console.error("Folder error At: ", folderName);
-    console.error("Error: ", error.message);
-    console.log("=============================");
+  // try {
+  //   const { data } = await axios({
+  //     method: "post",
+  //     url: url,
+  //     data: form_data,
+  //     headers: form_data.getHeaders(),
+  //   });
+  //   console.log(data);
+  // } catch (error) {
+  //   console.log("=============================");
+  //   console.error("Folder error At: ", folderName);
+  //   console.error("Error: ", error.message);
+  //   console.log("=============================");
 
-    exit();
-  }
+  //   // exit();
+  // }
 
   // reset parameters and count document
   attachments = [];
