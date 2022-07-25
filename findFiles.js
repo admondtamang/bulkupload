@@ -1,19 +1,26 @@
 const path = require("path");
 const excludeFileTypes = [".exe", ".DS_Store"];
 const fs = require("fs-extra");
-const { moveDirectory, printObject } = require("./utils");
-const { default: axios } = require("axios");
-const FormData = require("form-data");
-const { exit } = require("process");
-const executePython = require("./utils/executePython");
-const { base64_encode } = require("./createBase64");
+const { base64_encode } = require("./utils/createBase64");
+const sendData = require("./axios");
 
 var attachments = [];
 let result = [],
+  document_name = "",
   document = {},
   count = 0;
 
-const url = "http://localhost:8181/api/bpm-document";
+/**
+ *
+ * Execute find files
+ *
+ * @param {*} name
+ * @returns list of documents with attachment.
+ */
+async function executeFindFiles(name) {
+  await findFiles(name);
+  return result;
+}
 
 /**
  *
@@ -33,7 +40,9 @@ async function findFiles(folderName) {
   // donot include file extension
   items = items.filter((row) => !excludeFileTypes.includes(row.name));
 
-  console.log(items);
+  // File name
+  document_name = folderName;
+
   // Browser folders
   await Promise.all(
     items.map(async (item) => {
@@ -45,7 +54,7 @@ async function findFiles(folderName) {
         const encoded_data = base64_encode(filePath);
 
         const attach = {
-          src: "data:application/pdf;base64,",
+          src: "data:application/pdf;base64," + encoded_data,
           type: "application/pdf",
           name: item.name,
           file: {
@@ -67,28 +76,8 @@ async function findFiles(folderName) {
     })
   );
 
-  // Send request to DMS
-  // const form_data = new FormData();
-  // attachments.map((file) => {
-  //   form_data.append("files", fs.createReadStream(file));
-  // });
-
-  // try {
-  //   const { data } = await axios({
-  //     method: "post",
-  //     url: url,
-  //     data: form_data,
-  //     headers: form_data.getHeaders(),
-  //   });
-  //   console.log(data);
-  // } catch (error) {
-  //   console.log("=============================");
-  //   console.error("Folder error At: ", folderName);
-  //   console.error("Error: ", error.message);
-  //   console.log("=============================");
-
-  //   // exit();
-  // }
+  // Send data to api
+  await sendData(attachments, document_name);
 
   // reset parameters and count document
   attachments = [];
@@ -100,15 +89,4 @@ async function findFiles(folderName) {
   console.log("=============================");
 }
 
-/**
- *
- * Execute find files
- *
- * @param {*} name
- * @returns list of documents with attachment.
- */
-async function executeFindFiles(name) {
-  await findFiles(name);
-  return result;
-}
 module.exports = executeFindFiles;
