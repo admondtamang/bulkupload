@@ -2,7 +2,6 @@ const path = require("path");
 const excludeFileTypes = [".exe", ".DS_Store"];
 const fs = require("fs-extra");
 const { base64_encode } = require("./utils/createBase64");
-const sendData = require("./axios");
 
 var attachments = [];
 let result = [],
@@ -47,7 +46,7 @@ async function findFiles(folderName) {
   await Promise.all(
     items.map(async (item) => {
       document = { name: folderName };
-      const filePath = await path.join(folderName, item.name);
+      const filePath = path.join(folderName, item.name);
 
       // file found with following extension
       if (path.extname(item.name) === ".pdf") {
@@ -66,24 +65,18 @@ async function findFiles(folderName) {
         attachments.push(attach);
         result[count] = { ...document, attachments };
 
-        console.log(
-          `Found file: ${filePath} ${count} in folder: ${folderName}`
-        );
+        console.log(`Found file: ${filePath} ${count} in folder: ${folderName}`);
       } else {
         // find next folder if finish finding files
         await findFiles(filePath);
       }
     })
-  );
-
-  // Send data to api
-  await sendData(attachments, document_name);
+  ); // End of Promise
 
   // reset parameters and count document
   attachments = [];
   document = {};
   count = count + 1;
-  // moveDirectory('23121');
   console.log("=============================");
   console.log("Finish Document ", folderName, count);
   console.log("=============================");

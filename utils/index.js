@@ -1,6 +1,6 @@
 const util = require("util");
 const moment = require("moment");
-
+const fs = require("fs-extra");
 /**
  * Display object
  *
@@ -16,6 +16,11 @@ function printObject(obj) {
  * @param {string} dir_name
  */
 function moveDirectory(dir_name) {
+  // create success dir if not created
+  if (!fs.existsSync("success")) {
+    fs.mkdirSync("success");
+  }
+
   const sourceDir = "stores/" + dir_name;
   const destDir = "success/" + dir_name;
 
