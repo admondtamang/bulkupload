@@ -1,4 +1,4 @@
-const DOCUMENT_TYPES = {
+const DOUCMENT_INDICIES = {
   28: "Account Name", // INDIVIDUAL
   29: "Account Number",
   30: "Retail CIF ID",
@@ -38,4 +38,50 @@ const DOCUMENT_TYPES = {
   37: "Phone number ",
 };
 
-module.exports = { DOCUMENT_TYPES };
+const responseData = {
+  AccountName: 28,
+  AccountNumber: "0010100002494011",
+  BranchCode: 31,
+  BranchName: "DURBARMARG BRANCH",
+  CifId: "R000362731",
+  CustDob: "09/30/1991 00:00:00",
+  GrandfathersName: "TUK PRASAD ADHIKARI",
+  FathersName: "BALARAM SHRAMA ADHIKARI",
+  PhoneNum: "9846169746",
+  IdentifcationDocument: "CTZN",
+  IdNumber: "461002/1248",
+  PlaceOfIssue: "KASKI",
+  DocExpiryDate: null,
+  IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+};
+
+mappedData = {
+  AccountName: 28,
+  AccountNumber: "0010100002494011",
+  BranchCode: 31,
+  BranchName: "DURBARMARG BRANCH",
+  CifId: 31,
+  CustDob: 32,
+  GrandfathersName: 2,
+  FathersName: "BALARAM SHRAMA ADHIKARI",
+  PhoneNum: "9846169746",
+  IdentifcationDocument: "CTZN",
+  IdNumber: "461002/1248",
+  PlaceOfIssue: "KASKI",
+  DocExpiryDate: null,
+  IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+};
+
+const DOCUMENT_TYPE = {
+  1: "INDIVIDUAL",
+  2: "CORPORATE",
+  3: "KYC",
+  4: "IDENTIFICATION DOCUMENT",
+  5: "SIGNATURE CARD",
+  6: "KYC",
+  7: "IDENTIFICATION DOCUMENT",
+  8: "COMPANY DOCUMENTS",
+  9: "TAX CLEARANCE/AUDIT REPORT ",
+};
+
+module.exports = { DOUCMENT_INDICIES, DOCUMENT_TYPE, responseData };

@@ -2,6 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   axios: ^0.27.2
+  crypto: ^1.0.1
+  crypto-js: ^4.1.1
   form-data: ^4.0.0
   fs-extra: ^10.1.0
   moment: ^2.29.4
@@ -9,6 +11,8 @@ specifiers:
 
 dependencies:
   axios: 0.27.2
+  crypto: 1.0.1
+  crypto-js: 4.1.1
   form-data: 4.0.0
   fs-extra: 10.1.0
   moment: 2.29.4
@@ -34,6 +38,15 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
+    dev: false
+
+  /crypto-js/4.1.1:
+    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
+    dev: false
+
+  /crypto/1.0.1:
+    resolution: {integrity: sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==}
+    deprecated: This package is no longer supported. It's now a built-in Node module. If you've depended on crypto, you should switch to the one that's built-in.
     dev: false
 
   /delayed-stream/1.0.0:

@@ -15,7 +15,7 @@ async function sendDataToDMS(attachments, document_name) {
   // get file name
   document_name = document_name.split("\\")[1] || "Document";
 
-  const channel_manager_data = await channelManager();
+  // const channel_manager_data = await channelManager();
 
   // Send request to DMS
   const doc = {
@@ -24,7 +24,7 @@ async function sendDataToDMS(attachments, document_name) {
     documentTypeId: "1",
     documentIndex: [
       {
-        documentIndexId: 28,
+        documentIndexId: 28, // static
         value: "fsd",
       },
       {
@@ -33,6 +33,21 @@ async function sendDataToDMS(attachments, document_name) {
       },
     ],
   };
+
+  // Add indicies in attachments
+  attachments = attachments.map((row) => {
+    row.documentIndex = [
+      {
+        documentIndexId: 28, // static
+        value: "fsd",
+      },
+      {
+        documentIndexId: 29,
+        value: "aaa",
+      },
+    ];
+    return row;
+  });
 
   const form_data = {
     selectedFiles: [
