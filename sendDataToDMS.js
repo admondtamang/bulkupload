@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 const { exit } = require("process");
 const { getIdentifier, printObject, moveDirectory } = require("./utils");
+const { channelManager } = require("./utils/api/channelmanger");
 const { login } = require("./utils/api/login");
 const writeToFile = require("./utils/writeToFile");
 
@@ -13,6 +14,8 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
 async function sendDataToDMS(attachments, document_name) {
   // get file name
   document_name = document_name.split("\\")[1] || "Document";
+
+  const channel_manager_data = await channelManager();
 
   // Send request to DMS
   const doc = {
@@ -38,6 +41,8 @@ async function sendDataToDMS(attachments, document_name) {
         attachments,
       },
     ],
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
   };
 
   console.log("login");
@@ -56,6 +61,8 @@ async function sendDataToDMS(attachments, document_name) {
       method: "post",
       url: url,
       data: JSON.stringify(form_data),
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
       headers: {
         Authorization: `Admin ${token}`,
         "Content-Type": "application/json",
@@ -64,7 +71,7 @@ async function sendDataToDMS(attachments, document_name) {
 
     console.log("Document Upload Success");
     // Move Directory to succes
-    // if (data == "Success!") moveDirectory(document_name);
+    if (data == "Success!") moveDirectory(document_name);
   } catch (error) {
     console.log("=============================");
     console.error("Folder error At: ");
