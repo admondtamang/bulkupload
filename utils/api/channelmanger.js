@@ -11,6 +11,7 @@ const url = "http://192.168.76.17:60064/api/RetailCtznDms/RetailCtznDmsReq";
 async function channelManager(accountNumber) {
   try {
     const payload = await Encrypt(`{"TransactionId": "RCD-11","AccountNumber": "${accountNumber}"}`);
+    console.log("Connecting with Bank API through Channel Manager API ",payload,accountNumber)
 
     const { data } = await axios({
       method: "post",
@@ -37,5 +38,6 @@ async function channelManager(accountNumber) {
   }
 }
 
-channelManager('0070100000001041')
+// channelManager('0070100000001041')
+// channelManager('0010100001280013')
 module.exports = { channelManager };

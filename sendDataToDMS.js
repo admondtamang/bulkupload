@@ -12,10 +12,17 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
  * @param {string} document_name
  */
 async function sendDataToDMS(attachments, document_name) {
-  // get file name
-  document_name = document_name.split("\\")[1] || "Document";
+  try {
+      // get file name
+  document_name = document_name.split("\\")[1] ;
 
-  const api_result = await channelManager();
+  } catch (error) {
+    console.log("Error== Folder name - cannot extract account number");
+    console.log(error);
+  exit()
+  }
+
+  const api_result = await channelManager(document_name);
 
 
   // Send request to DMS
@@ -46,10 +53,9 @@ async function sendDataToDMS(attachments, document_name) {
 
   // Add indicies in attachments
   attachments = attachments.map((row) => {
-
+const filename=row.name;
     let res = [];
-    const doc_type = str.substring(str.lastIndexOf("_") + 1, str.length).split(".")[0];
-
+    const doc_type = filename.substring(filename.lastIndexOf("_") + 1, filename.length).split(".")[0];
 
     const documentIndicies = CITIZEN_DOCUMENTS?.[doc_type].documentIndex.map(element => {
       res = element.documentIndexId;
