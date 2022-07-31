@@ -15,7 +15,9 @@ async function sendDataToDMS(attachments, document_name) {
   // get file name
   document_name = document_name.split("\\")[1] || "Document";
 
-  // const channel_manager_data = await channelManager();
+  const api_result = await channelManager();
+   
+  console.log(channel_manager_data.Data);
 
   // Send request to DMS
   const doc = {
@@ -25,11 +27,20 @@ async function sendDataToDMS(attachments, document_name) {
     documentIndex: [
       {
         documentIndexId: 28, // static
-        value: "fsd",
+        value: api_result?.AccountName,
       },
       {
         documentIndexId: 29,
-        value: "aaa",
+        value: api_result?.AccountNumber
+      },{
+        documentIndexId: 30,
+        value: api_result?.CifId
+      },{
+        documentIndexId: 31,
+        value: api_result?.BranchCode
+      },{
+        documentIndexId: 32,
+        value: api_result?.CustDob
       },
     ],
   };
