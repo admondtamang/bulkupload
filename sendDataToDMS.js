@@ -16,8 +16,7 @@ async function sendDataToDMS(attachments, document_name) {
   document_name = document_name.split("\\")[1] || "Document";
 
   const api_result = await channelManager();
-   
-  console.log(channel_manager_data.Data);
+
 
   // Send request to DMS
   const doc = {
@@ -32,13 +31,13 @@ async function sendDataToDMS(attachments, document_name) {
       {
         documentIndexId: 29,
         value: api_result?.AccountNumber
-      },{
+      }, {
         documentIndexId: 30,
         value: api_result?.CifId
-      },{
+      }, {
         documentIndexId: 31,
         value: api_result?.BranchCode
-      },{
+      }, {
         documentIndexId: 32,
         value: api_result?.CustDob
       },
@@ -47,19 +46,24 @@ async function sendDataToDMS(attachments, document_name) {
 
   // Add indicies in attachments
   attachments = attachments.map((row) => {
-    row.documentIndex = [
-      {
-        documentIndexId: 28, // static
-        value: "fsd",
-      },
-      {
-        documentIndexId: 29,
-        value: "aaa",
-      },
-    ];
+
+    let res = [];
+    const doc_type = str.substring(str.lastIndexOf("_") + 1, str.length).split(".")[0];
+
+
+    const documentIndicies = CITIZEN_DOCUMENTS?.[doc_type].documentIndex.map(element => {
+      res = element.documentIndexId;
+      res = api_result[element.name];
+      return res;
+    })
+
+    row.documentIndex = documentIndicies
+
     return row;
   });
 
+
+  console.log(attachments);
   const form_data = {
     selectedFiles: [
       {

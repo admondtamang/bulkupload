@@ -38,23 +38,6 @@ const DOUCMENT_INDICIES = {
     37: "Phone number ",
 };
 
-const responseData = {
-    AccountName: 28,
-    AccountNumber: "0010100002494011",
-    BranchCode: 31,
-    BranchName: "DURBARMARG BRANCH",
-    CifId: "R000362731",
-    CustDob: "09/30/1991 00:00:00",
-    GrandfathersName: "TUK PRASAD ADHIKARI",
-    FathersName: "BALARAM SHRAMA ADHIKARI",
-    PhoneNum: "9846169746",
-    IdentifcationDocument: "CTZN",
-    IdNumber: "461002/1248",
-    PlaceOfIssue: "KASKI",
-    DocExpiryDate: null,
-    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-};
-
 const DOCUMENT_TYPE = {
     1: "INDIVIDUAL",
     3: "KYC",
@@ -69,19 +52,57 @@ const DOCUMENT_TYPE = {
     11: "AOF"
 };
 
+const responseData = {
+    AccountName: 28,
+    AccountNumber: "0010100002494011",
+    BranchCode: 31,
+    BranchName: "DURBARMARG BRANCH",
+    CifId: "R000362731",
+    CustDob: "09/30/1991 00:00:00",
+    GrandfathersName: "TUK PRASAD ADHIKARI",
+    FathersName: "BALARAM SHRAMA ADHIKARI",
+    PhoneNum: "9846169746",//
+    IdentifcationDocument: "CTZN",
+    IdNumber: "461002/1248",
+    PlaceOfIssue: "KASKI",
+    DocExpiryDate: null,//
+    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+};
+
 
 const CITIZEN_DOCUMENTS = {
     0001: {
         name: "AOF",
-        value: 10
+        value: 10,
+        documentIndex: [{
+            documentIndexId: 26, // static
+            name: 'IdNumber'
+        },
+        ]
     },
     0002: {
         name: "KYC",
-        value: 3
+        value: 3,
+        documentIndex: [{
+            documentIndexId: 1, // static
+            name: 'FathersName'
+        }, {
+            documentIndexId: 2, // static
+            name: 'GrandfathersName'
+        }, {
+            documentIndexId: 3, // static
+            name: 'PhoneNum'
+        },
+        ]
     },
     0003: {
         name: "IDENTIFICATION DOCUMENT",
-        value: 4
+        value: 4,
+        documentIndex: [{
+            documentIndexId: 4, // static
+            name: 'IdentifcationDocument'
+        },
+        ]
     }
 }
 
