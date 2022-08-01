@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
 const { exit } = require("process");
+const { CITIZEN_DOCUMENTS, DOCUMENT_TYPE } = require("./constants/constant_citizen");
 const { getIdentifier, printObject, moveDirectory } = require("./utils");
 const { channelManager } = require("./utils/api/channelmanger");
 const { login } = require("./utils/api/login");
@@ -9,21 +10,23 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
 
 /**
  *
+ * Send data to dms through API
+ * @param {Array} attachments
  * @param {string} document_name
  */
 async function sendDataToDMS(attachments, document_name) {
   try {
-      // get file name
-  document_name = document_name.split("\\")[1] ;
+    // get file name
+    document_name = document_name.split("\\")[1];
 
   } catch (error) {
     console.log("Error== Folder name - cannot extract account number");
     console.log(error);
-  exit()
+    exit()
   }
 
+  // Get data from channel manager  
   const api_result = await channelManager(document_name);
-
 
   // Send request to DMS
   const doc = {
@@ -51,15 +54,31 @@ async function sendDataToDMS(attachments, document_name) {
     ],
   };
 
+
+
+
   // Add indicies in attachments
   attachments = attachments.map((row) => {
-const filename=row.name;
-    let res = [];
+    const filename = row.name;
     const doc_type = filename.substring(filename.lastIndexOf("_") + 1, filename.length).split(".")[0];
 
-    const documentIndicies = CITIZEN_DOCUMENTS?.[doc_type].documentIndex.map(element => {
-      res = element.documentIndexId;
-      res = api_result[element.name];
+    let ctzn_docs = []
+    try {
+      ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)].documentIndex;
+
+    } catch (error) {
+      console.log("Not defined in constant. ", doc_type)
+      console.log(error);
+      exit()
+
+    }
+
+    // document indexes mapped with document types.
+    const documentIndicies = ctzn_docs.map(element => {
+      let res = {};
+      res = { ...res, documentIndexId: element.documentIndexId };
+      res = { ...res, value: api_result?.[element.name] || "" };
+
       return res;
     })
 
@@ -69,7 +88,7 @@ const filename=row.name;
   });
 
 
-  console.log(attachments);
+  // Payload for dms api
   const form_data = {
     selectedFiles: [
       {
@@ -106,8 +125,10 @@ const filename=row.name;
     });
 
     console.log("Document Upload Success");
+    exit()
     // Move Directory to succes
     if (data == "Success!") moveDirectory(document_name);
+
   } catch (error) {
     console.log("=============================");
     console.error("Folder error At: ");
