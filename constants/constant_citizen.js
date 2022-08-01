@@ -39,7 +39,23 @@ const DOUCMENT_INDICIES = {
 };
 
 const DOCUMENT_TYPE = {
-    1: "INDIVIDUAL",
+    1: {
+        name: "Individual",
+        documentIndex: [
+            {
+                documentIndexId: 28,
+            },
+            {
+                documentIndexId: 29,
+            }, {
+                documentIndexId: 30,
+            }, {
+                documentIndexId: 31,
+            }, {
+                documentIndexId: 32,
+            },
+        ],
+    },
     3: "KYC",
     4: "IDENTIFICATION DOCUMENT",
     10: "AOF", //  individual
@@ -51,6 +67,19 @@ const DOCUMENT_TYPE = {
     9: "TAX CLEARANCE/AUDIT REPORT ",
     11: "AOF"
 };
+// const DOCUMENT_TYPE = {
+//     1: "INDIVIDUAL",
+//     3: "KYC",
+//     4: "IDENTIFICATION DOCUMENT",
+//     10: "AOF", //  individual
+//     2: "CORPORATE",
+//     5: "SIGNATURE CARD",
+//     6: "KYC",
+//     7: "IDENTIFICATION DOCUMENT",
+//     8: "COMPANY DOCUMENTS",
+//     9: "TAX CLEARANCE/AUDIT REPORT ",
+//     11: "AOF"
+// };
 
 const responseData = {
     AccountName: 28,
@@ -75,8 +104,8 @@ const CITIZEN_DOCUMENTS = {
         name: "AOF",
         value: 10,
         documentIndex: [{
-            documentIndexId: 26, // static
-            name: 'IdNumber'
+            documentIndexId: 26,
+            name: 'IdNumber',
         },
         ]
     },
@@ -84,13 +113,13 @@ const CITIZEN_DOCUMENTS = {
         name: "KYC",
         value: 3,
         documentIndex: [{
-            documentIndexId: 1, // static
+            documentIndexId: 1,
             name: 'FathersName'
         }, {
-            documentIndexId: 2, // static
+            documentIndexId: 2,
             name: 'GrandfathersName'
         }, {
-            documentIndexId: 3, // static
+            documentIndexId: 3,
             name: 'PhoneNum'
         },
         ]
@@ -100,7 +129,7 @@ const CITIZEN_DOCUMENTS = {
         value: 4,
         documentIndex: [{
             documentIndexId: 4, // static
-            name: 'IdentifcationDocument'
+            name: 'IdentificationDocument'
         },
         ]
     }

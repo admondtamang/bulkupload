@@ -27,11 +27,27 @@ async function sendDataToDMS(attachments, document_name) {
 
   // Get data from channel manager  
   const api_result = await channelManager(document_name);
+  // const api_result = {
+  //   AccountName: 28,
+  //   AccountNumber: "0010100002494011",
+  //   BranchCode: 31,
+  //   BranchName: "DURBARMARG BRANCH",
+  //   CifId: "R000362731",
+  //   CustDob: "09/30/1991 00:00:00",
+  //   GrandfathersName: "TUK PRASAD ADHIKARI",
+  //   FathersName: "BALARAM SHRAMA ADHIKARI",
+  //   PhoneNum: "9846169746",//
+  //   IdentifcationDocument: "CTZN",
+  //   IdNumber: "461002/1248",
+  //   PlaceOfIssue: "KASKI",
+  //   DocExpiryDate: null,//
+  //   IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+  // };
 
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
-    otherTitle: document_name,
+    otherTitle: api_result.AccountNumber+"-"+api_result.AccountName,
     documentTypeId: "1",
     documentIndex: [
       {
@@ -56,7 +72,6 @@ async function sendDataToDMS(attachments, document_name) {
 
 
 
-
   // Add indicies in attachments
   attachments = attachments.map((row) => {
     const filename = row.name;
@@ -77,7 +92,7 @@ async function sendDataToDMS(attachments, document_name) {
     const documentIndicies = ctzn_docs.map(element => {
       let res = {};
       res = { ...res, documentIndexId: element.documentIndexId };
-      res = { ...res, value: api_result?.[element.name] || "" };
+      res = { ...res, value: doc_type =="0001" ?1: api_result?.[element.name] || "" };
 
       return res;
     })
@@ -125,7 +140,6 @@ async function sendDataToDMS(attachments, document_name) {
     });
 
     console.log("Document Upload Success");
-    exit()
     // Move Directory to succes
     if (data == "Success!") moveDirectory(document_name);
 
