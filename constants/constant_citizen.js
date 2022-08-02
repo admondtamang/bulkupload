@@ -139,7 +139,7 @@ const CITIZEN_DOCUMENTS = {
         },{
             documentIndexId: 7, // static
             name: 'CustDob',
-        },,{
+        },{
             documentIndexId: 8, // static
             name: 'DocExpiryDate',
 

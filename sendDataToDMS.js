@@ -78,10 +78,10 @@ async function sendDataToDMS(attachments, document_name) {
     const filename = row.name;
     const doc_type = filename.substring(filename.lastIndexOf("_") + 1, filename.length).split(".")[0];
 
-    let ctzn_docs = []
+    let ctzn_docs = [],parent_doc={}
     try {
       ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)].documentIndex;
-
+      parent_doc= CITIZEN_DOCUMENTS?.[parseInt(doc_type)]
     } catch (error) {
       console.log("Not defined in constant. ", doc_type)
       console.log(error);
@@ -110,13 +110,12 @@ async function sendDataToDMS(attachments, document_name) {
 
       let res = {};
       res = { ...res, documentIndexId: element.documentIndexId };
-      res = { ...res, documentTypeId: element.value };
       res = { ...res, value: doc_type == "0001" ? 1 : value || "" }; // static value of 0001 document (AOF)
-
       return res;
     })
 
     row.documentIndex = documentIndicies
+    row.documentTypeId=parent_doc.value
 
     return row;
   });
@@ -159,6 +158,7 @@ async function sendDataToDMS(attachments, document_name) {
     });
 
     console.log("Document Upload Success");
+    exit()
     // Move Directory to succes
     if (data == "Success!") moveDirectory(document_name);
 
