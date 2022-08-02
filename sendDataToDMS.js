@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 const { exit } = require("process");
 const { CITIZEN_DOCUMENTS, DOCUMENT_TYPE } = require("./constants/constant_citizen");
+const District  = require("./constants/district");
 const { getIdentifier, printObject, moveDirectory } = require("./utils");
 const { channelManager } = require("./utils/api/channelmanger");
 const { login } = require("./utils/api/login");
@@ -90,9 +91,26 @@ async function sendDataToDMS(attachments, document_name) {
 
     // document indexes mapped with document types.
     const documentIndicies = ctzn_docs.map(element => {
+      let value=api_result?.[element.name] 
+
+      if(element?.validation && value){
+        if(element?.validation?.table){
+          try {            
+            value= District.find(row=>{
+              return row.name.toLocaleLowerCase().trim() == value.toLocaleLowerCase().trim()
+            })?.id || value
+
+          } catch (error) {
+            console.log("Cannot find district with our db");
+            console.log(error);
+            exit()
+          }
+        }
+      }
+
       let res = {};
       res = { ...res, documentIndexId: element.documentIndexId };
-      res = { ...res, value: doc_type =="0001" ?1: api_result?.[element.name] || "" };
+      res = { ...res, value: doc_type =="0001" ? 1 : value|| "" }; // static value of 0001 document (AOF)
 
       return res;
     })
