@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const { exit } = require("process");
 const { CITIZEN_DOCUMENTS, DOCUMENT_TYPE } = require("./constants/constant_citizen");
-const District  = require("./constants/district");
+const District = require("./constants/district");
 const { getIdentifier, printObject, moveDirectory } = require("./utils");
 const { channelManager } = require("./utils/api/channelmanger");
 const { login } = require("./utils/api/login");
@@ -48,8 +48,8 @@ async function sendDataToDMS(attachments, document_name) {
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
-    otherTitle: api_result.AccountNumber+"-"+api_result.AccountName,
-    documentTypeId: "1",
+    otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
+    documentTypeId: 1,
     documentIndex: [
       {
         documentIndexId: 28, // static
@@ -91,12 +91,12 @@ async function sendDataToDMS(attachments, document_name) {
 
     // document indexes mapped with document types.
     const documentIndicies = ctzn_docs.map(element => {
-      let value=api_result?.[element.name] 
+      let value = api_result?.[element.name]
 
-      if(element?.validation && value){
-        if(element?.validation?.table){
-          try {            
-            value= District.find(row=>{
+      if (element?.validation && value) {
+        if (element?.validation?.table) {
+          try {
+            value = District.find(row => {
               return row.name.toLocaleLowerCase().trim() == value.toLocaleLowerCase().trim()
             })?.id || value
 
@@ -110,7 +110,8 @@ async function sendDataToDMS(attachments, document_name) {
 
       let res = {};
       res = { ...res, documentIndexId: element.documentIndexId };
-      res = { ...res, value: doc_type =="0001" ? 1 : value|| "" }; // static value of 0001 document (AOF)
+      res = { ...res, documentTypeId: element.value };
+      res = { ...res, value: doc_type == "0001" ? 1 : value || "" }; // static value of 0001 document (AOF)
 
       return res;
     })
