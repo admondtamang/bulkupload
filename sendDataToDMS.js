@@ -17,8 +17,10 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
  */
 async function sendDataToDMS(attachments, document_name) {
   try {
+
     // get file name
-    document_name = document_name.split("\\")[1];
+    // document_name = document_name.split("\\")[1];
+    document_name= document_name.split('\\').pop()
 
   } catch (error) {
     console.log("Error== Folder name - cannot extract account number");

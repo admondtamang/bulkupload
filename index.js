@@ -2,11 +2,12 @@ const sendDataToDMS = require("./sendDataToDMS");
 const executeFindFiles = require("./findFiles");
 const { default: axios } = require("axios");
 const resolvePromisesSeq = require("./utils/resolvePromiseSeq");
+const { folder_path } = require("./utils/config");
 
 (async () => {
   try {
     // find files of folder stores
-    const result = await executeFindFiles(process.env.FOLDER_PATH || "stores");
+    const result = await executeFindFiles(folder_path);
 
     // Send Data to DMS using Bulk uplod API
     // const promises = await Promise.all(
