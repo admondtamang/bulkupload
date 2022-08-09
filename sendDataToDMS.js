@@ -158,7 +158,6 @@ async function sendDataToDMS(attachments, document_name) {
     });
 
     console.log("Document Upload Success");
-    exit()
     // Move Directory to succes
     if (data == "Success!") moveDirectory(document_name);
 

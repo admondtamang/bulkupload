@@ -6,7 +6,7 @@ const resolvePromisesSeq = require("./utils/resolvePromiseSeq");
 (async () => {
   try {
     // find files of folder stores
-    const result = await executeFindFiles(process.env.FOLDER_NAME || "stores");
+    const result = await executeFindFiles(process.env.FOLDER_PATH || "stores");
 
     // Send Data to DMS using Bulk uplod API
     // const promises = await Promise.all(
