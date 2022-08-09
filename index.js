@@ -38,7 +38,7 @@ const single_folder = async (path) => {
     //     return await sendDataToDMS(row.attachments, row.name);
     //   })
     // );
-    await resolvePromisesSeq(result);
+    await resolvePromisesSeq(result,path);
 
     // console.log(promises);
   } catch (e) {
@@ -50,8 +50,9 @@ const single_folder = async (path) => {
 // mutltiple folder upload
 
 (async function Multiple_folder() {
-  for (i = 4; i <= 128; i++) {
-    console.log("folder,", folder_path + i);
+  // 128
+  for (i = 6; i <= 7; i++) {
+
     await single_folder(folder_path + i);
   }
 

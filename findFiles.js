@@ -1,5 +1,5 @@
 const path = require("path");
-const excludeFileTypes = [".exe", ".DS_Store"];
+const excludeFileTypes = [".exe", ".DS_Store","success"];
 const fs = require("fs-extra");
 const { base64_encode } = require("./utils/createBase64");
 

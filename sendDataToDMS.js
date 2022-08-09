@@ -16,7 +16,7 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
  * @param {Array} attachments
  * @param {string} document_name
  */
-async function sendDataToDMS(attachments, document_name) {
+async function sendDataToDMS(attachments, document_name,path) {
   try {
 
     // get file name
@@ -53,6 +53,9 @@ async function sendDataToDMS(attachments, document_name) {
     identifier: getIdentifier(),
     otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
     documentTypeId: 1,
+    branchId:42,
+    sendToChecker:false,
+    hierarchy:'Branch_42',
     documentIndex: [
       {
         documentIndexId: 28, // static
@@ -167,7 +170,9 @@ async function sendDataToDMS(attachments, document_name) {
     console.log("Document Upload Success");
     // Move Directory to succes
     // exit()
-    if (data == "Success!") moveDirectory(document_name);
+    if (data == "Success!") moveDirectory(document_name,path);
+    console.log("=============================");
+
 
   } catch (error) {
     console.log("=============================");
