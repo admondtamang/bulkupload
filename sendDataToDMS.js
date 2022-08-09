@@ -6,6 +6,7 @@ const { getIdentifier, printObject, moveDirectory } = require("./utils");
 const { channelManager } = require("./utils/api/channelmanger");
 const { login } = require("./utils/api/login");
 const writeToFile = require("./utils/writeToFile");
+const moment = require("moment")
 
 const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
 
@@ -20,7 +21,7 @@ async function sendDataToDMS(attachments, document_name) {
 
     // get file name
     // document_name = document_name.split("\\")[1];
-    document_name= document_name.split('\\').pop()
+    document_name = document_name.split('\\').pop()
 
   } catch (error) {
     console.log("Error== Folder name - cannot extract account number");
@@ -80,10 +81,10 @@ async function sendDataToDMS(attachments, document_name) {
     const filename = row.name;
     const doc_type = filename.substring(filename.lastIndexOf("_") + 1, filename.length).split(".")[0];
 
-    let ctzn_docs = [],parent_doc={}
+    let ctzn_docs = [], parent_doc = {}
     try {
       ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)].documentIndex;
-      parent_doc= CITIZEN_DOCUMENTS?.[parseInt(doc_type)]
+      parent_doc = CITIZEN_DOCUMENTS?.[parseInt(doc_type)]
     } catch (error) {
       console.log("Not defined in constant. ", doc_type)
       console.log(error);
@@ -108,6 +109,10 @@ async function sendDataToDMS(attachments, document_name) {
             exit()
           }
         }
+
+        if (element?.validation?.date) {
+          value = moment(new Date(value)).format("YYYY-MM-DD");
+        }
       }
 
       let res = {};
@@ -117,7 +122,7 @@ async function sendDataToDMS(attachments, document_name) {
     })
 
     row.documentIndex = documentIndicies
-    row.documentTypeId=parent_doc.value
+    row.documentTypeId = parent_doc.value
 
     return row;
   });
@@ -161,6 +166,7 @@ async function sendDataToDMS(attachments, document_name) {
 
     console.log("Document Upload Success");
     // Move Directory to succes
+    // exit()
     if (data == "Success!") moveDirectory(document_name);
 
   } catch (error) {

@@ -129,19 +129,22 @@ const CITIZEN_DOCUMENTS = {
         documentIndex: [{
             documentIndexId: 4, // static
             name: 'IdentificationDocument'
-        },{
+        }, {
             documentIndexId: 5, // static
             name: 'IdNumber'
-        },{
+        }, {
             documentIndexId: 6, // static
             name: 'PlaceOfIssue',
-            validation:{table:'district'}
-        },{
+            validation: { table: 'district' }
+        }, {
             documentIndexId: 7, // static
             name: 'CustDob',
-        },{
+            validation: { date: 'date' }
+
+        }, {
             documentIndexId: 8, // static
             name: 'DocExpiryDate',
+            validation: { date: 'date' }
 
         },
         ]
