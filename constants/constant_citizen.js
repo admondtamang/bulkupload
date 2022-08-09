@@ -148,6 +148,11 @@ const CITIZEN_DOCUMENTS = {
 
         },
         ]
+    },
+    0004:{
+        name:"OTHERS",
+        value:12,
+        documentIndex: []
     }
 }
 
