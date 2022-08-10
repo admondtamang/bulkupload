@@ -1,10 +1,10 @@
 const path = require("path");
-const excludeFileTypes = [".exe", ".DS_Store","success"];
+const excludeFileTypes = [".exe", ".DS_Store", "success"];
 const fs = require("fs-extra");
 const { base64_encode } = require("./utils/createBase64");
 
 var attachments = [];
-let result = [],
+var result = [],
   document_name = "",
   document = {},
   count = 0;
@@ -17,6 +17,11 @@ let result = [],
  * @returns list of documents with attachment.
  */
 async function executeFindFiles(name) {
+  attachments = [];
+  result = [],
+    document_name = "",
+    document = {},
+    count = 0;
   await findFiles(name);
   return result;
 }
@@ -35,6 +40,9 @@ async function findFiles(folderName) {
   } catch (error) {
     console.log("not a folder", error);
   }
+
+  if (folderName == "success")
+    await findFiles(filePath);
 
   // donot include file extension
   items = items.filter((row) => !excludeFileTypes.includes(row.name));

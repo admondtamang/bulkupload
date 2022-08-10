@@ -17,24 +17,24 @@ function printObject(obj) {
  *
  * @param {string} dir_name
  */
-function moveDirectory(dir_name,path) {
-  let folder=folder_path
-  if(path)
-  folder=path
+function moveDirectory(dir_name, path) {
+  let folder = folder_path
+  if (path)
+    folder = path
 
   // create success dir if not created
-  if (!fs.existsSync(folder+"/success")) {
-    fs.mkdirSync(folder+"/success");
+  if (!fs.existsSync(folder + "/success")) {
+    fs.mkdirSync(folder + "/success");
   }
 
-  const sourceDir = folder+"/" + dir_name;
-  const destDir =  folder+"/success/"+ dir_name;
+  const sourceDir = folder + "/" + dir_name;
+  const destDir = folder + "/success/" + dir_name;
 
   fs.move(sourceDir, destDir, (err) => {
     if (err) {
-      
-       console.error(err);
-exit()
+      console.log(folder, "====");
+      console.error(err);
+      exit()
     }
     console.log("success!");
   });

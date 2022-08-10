@@ -1,11 +1,11 @@
 const { default: axios } = require("axios");
 const { exit } = require("process");
-const { CITIZEN_DOCUMENTS, DOCUMENT_TYPE } = require("./constants/constant_citizen");
-const District = require("./constants/district");
-const { getIdentifier, printObject, moveDirectory } = require("./utils");
-const { channelManager } = require("./utils/api/channelmanger");
-const { login } = require("./utils/api/login");
-const writeToFile = require("./utils/writeToFile");
+const { CITIZEN_DOCUMENTS, DOCUMENT_TYPE } = require("../constants/constant_citizen");
+const District = require("../constants/district");
+const { getIdentifier, printObject, moveDirectory } = require(".");
+const { channelManager } = require("./api/channelmanger");
+const { login } = require("./api/login");
+const writeToFile = require("./writeToFile");
 const moment = require("moment")
 
 const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
@@ -16,7 +16,7 @@ const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
  * @param {Array} attachments
  * @param {string} document_name
  */
-async function sendDataToDMS(attachments, document_name,path) {
+async function sendDataToDMS(attachments, document_name, path) {
   try {
 
     // get file name
@@ -30,32 +30,32 @@ async function sendDataToDMS(attachments, document_name,path) {
   }
 
   // Get data from channel manager  
-  const api_result = await channelManager(document_name);
-  // const api_result = {
-  //   AccountName: 28,
-  //   AccountNumber: "0010100002494011",
-  //   BranchCode: 31,
-  //   BranchName: "DURBARMARG BRANCH",
-  //   CifId: "R000362731",
-  //   CustDob: "09/30/1991 00:00:00",
-  //   GrandfathersName: "TUK PRASAD ADHIKARI",
-  //   FathersName: "BALARAM SHRAMA ADHIKARI",
-  //   PhoneNum: "9846169746",//
-  //   IdentifcationDocument: "CTZN",
-  //   IdNumber: "461002/1248",
-  //   PlaceOfIssue: "KASKI",
-  //   DocExpiryDate: null,//
-  //   IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-  // };
+  // const api_result = await channelManager(document_name);
+  const api_result = {
+    AccountName: 28,
+    AccountNumber: "0010100002494011",
+    BranchCode: 31,
+    BranchName: "DURBARMARG BRANCH",
+    CifId: "R000362731",
+    CustDob: "09/30/1991 00:00:00",
+    GrandfathersName: "TUK PRASAD ADHIKARI",
+    FathersName: "BALARAM SHRAMA ADHIKARI",
+    PhoneNum: "9846169746",//
+    IdentifcationDocument: "CTZN",
+    IdNumber: "461002/1248",
+    PlaceOfIssue: "KASKI",
+    DocExpiryDate: null,//
+    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+  };
 
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
     otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
     documentTypeId: 1,
-    branchId:42,
-    sendToChecker:false,
-    hierarchy:'Branch_42',
+    branchId: 42,
+    sendToChecker: false,
+    hierarchy: 'Branch_42',
     documentIndex: [
       {
         documentIndexId: 28, // static
@@ -170,7 +170,7 @@ async function sendDataToDMS(attachments, document_name,path) {
     console.log("Document Upload Success");
     // Move Directory to succes
     // exit()
-    if (data == "Success!") moveDirectory(document_name,path);
+    if (data == "Success!") moveDirectory(document_name, path);
     console.log("=============================");
 
 
