@@ -30,30 +30,35 @@ async function sendDataToDMS(attachments, document_name, path) {
   }
 
   // Get data from channel manager  
-  // const api_result = await channelManager(document_name);
-  const api_result = {
-    AccountName: 28,
-    AccountNumber: "0010100002494011",
-    BranchCode: 31,
-    BranchName: "DURBARMARG BRANCH",
-    CifId: "R000362731",
-    CustDob: "09/30/1991 00:00:00",
-    GrandfathersName: "TUK PRASAD ADHIKARI",
-    FathersName: "BALARAM SHRAMA ADHIKARI",
-    PhoneNum: "9846169746",//
-    IdentifcationDocument: "CTZN",
-    IdNumber: "461002/1248",
-    PlaceOfIssue: "KASKI",
-    DocExpiryDate: null,//
-    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-  };
+  const api_result = await channelManager(document_name);
+  // const api_result = {
+  //   AccountName: 28,
+  //   AccountNumber: "0010100002494011",
+  //   BranchCode: 31,
+  //   BranchName: "DURBARMARG BRANCH",
+  //   CifId: "R000362731",
+  //   CustDob: "09/30/1991 00:00:00",
+  //   GrandfathersName: "TUK PRASAD ADHIKARI",
+  //   FathersName: "BALARAM SHRAMA ADHIKARI",
+  //   PhoneNum: "9846169746",//
+  //   IdentifcationDocument: "CTZN",
+  //   IdNumber: "461002/1248",
+  //   PlaceOfIssue: "KASKI",
+  //   DocExpiryDate: null,//
+  //   IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+  // };
 
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
     otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
     documentTypeId: 1,
+    departmentId:null,
     branchId: 42,
+    securityLevel:null,
+    locationMapId:42,
+    name:api_result.AccountNumber,
+    documentConditionId:1,
     sendToChecker: false,
     hierarchy: 'Branch_42',
     documentIndex: [
@@ -176,8 +181,8 @@ async function sendDataToDMS(attachments, document_name, path) {
 
   } catch (error) {
     console.log("=============================");
-    console.error("Folder error At: ");
-    console.error("Error: ", error, error.message);
+    console.error("Folder error At:DMS SEnd ");
+    console.error("Error: ", error.message);
     console.log("=============================");
     exit();
   }
