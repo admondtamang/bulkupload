@@ -6,7 +6,8 @@ const { getIdentifier, printObject, moveDirectory } = require(".");
 const { channelManager } = require("./api/channelmanger");
 const { login } = require("./api/login");
 const writeToFile = require("./writeToFile");
-const moment = require("moment")
+const moment = require("moment");
+const { validateIndexes } = require("./validations");
 
 const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
 
@@ -30,57 +31,51 @@ async function sendDataToDMS(attachments, document_name, path) {
   }
 
   // Get data from channel manager  
-  const api_result = await channelManager(document_name);
-  // const api_result = {
-  //   AccountName: 28,
-  //   AccountNumber: "0010100002494011",
-  //   BranchCode: 31,
-  //   BranchName: "DURBARMARG BRANCH",
-  //   CifId: "R000362731",
-  //   CustDob: "09/30/1991 00:00:00",
-  //   GrandfathersName: "TUK PRASAD ADHIKARI",
-  //   FathersName: "BALARAM SHRAMA ADHIKARI",
-  //   PhoneNum: "9846169746",//
-  //   IdentifcationDocument: "CTZN",
-  //   IdNumber: "461002/1248",
-  //   PlaceOfIssue: "KASKI",
-  //   DocExpiryDate: null,//
-  //   IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-  // };
+  // const api_result = await channelManager(document_name);
+  const api_result = {
+    AccountName: 'Ramesh thapalia',
+    AccountNumber: "0010100002494011",
+    BranchCode: 31,
+    BranchName: "DURBARMARG BRANCH",
+    CifId: "R000362731",
+    CustDob: "09/30/1991 00:00:00",
+    GrandfathersName: "TUK PRASAD ADHIKARI",
+    FathersName: "BALARAM SHRAMA ADHIKARI",
+    PhoneNum: "9846169746",//
+    IdentificationDocument: "CTZN",
+    IdNumber: "461002/1248",
+    PlaceOfIssue: "KASKI",
+    DocExpiryDate: null,//
+    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+  };
+
+
+
+  // document index for document
+  const documentIndex = CITIZEN_DOCUMENTS.INDIVIDUAL.documentIndex.map(row => {
+
+    let value = api_result?.[row.name]
+
+    if (row?.validation && value) {
+      value = validateIndexes(row, value)
+    }
+
+    return {
+      documentIndexId: row.documentIndexId, value: value || ""
+    };
+  })
+
 
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
     otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
-    documentTypeId: 1,
-    departmentId:null,
+    documentTypeId: CITIZEN_DOCUMENTS.INDIVIDUAL.value,
     branchId: 42,
-    securityLevel:null,
-    locationMapId:42,
-    name:api_result.AccountNumber,
-    documentConditionId:1,
     sendToChecker: false,
     hierarchy: 'Branch_42',
-    documentIndex: [
-      {
-        documentIndexId: 28, // static
-        value: api_result?.AccountName,
-      },
-      {
-        documentIndexId: 29,
-        value: api_result?.AccountNumber
-      }, {
-        documentIndexId: 30,
-        value: api_result?.CifId
-      }, {
-        documentIndexId: 31,
-        value: api_result?.BranchCode
-      }, {
-        documentIndexId: 32,
-        value: api_result?.CustDob
-      },
-    ],
-  };
+    documentIndex
+  }
 
 
 
@@ -105,28 +100,10 @@ async function sendDataToDMS(attachments, document_name, path) {
       let value = api_result?.[element.name]
 
       if (element?.validation && value) {
-        if (element?.validation?.table) {
-          try {
-            value = District.find(row => {
-              return row.name.toLocaleLowerCase().trim() == value.toLocaleLowerCase().trim()
-            })?.id || value
-
-          } catch (error) {
-            console.log("Cannot find district with our db");
-            console.log(error);
-            exit()
-          }
-        }
-
-        if (element?.validation?.date) {
-          value = moment(new Date(value)).format("YYYY-MM-DD");
-        }
+        value = validateIndexes(element, value)
       }
 
-      let res = {};
-      res = { ...res, documentIndexId: element.documentIndexId };
-      res = { ...res, value: doc_type == "0001" ? 1 : value || "" }; // static value of 0001 document (AOF)
-      return res;
+      return { documentIndexId: element.documentIndexId, value: value || "" };
     })
 
     row.documentIndex = documentIndicies
@@ -181,8 +158,8 @@ async function sendDataToDMS(attachments, document_name, path) {
 
   } catch (error) {
     console.log("=============================");
-    console.error("Folder error At:DMS SEnd ");
-    console.error("Error: ", error.message);
+    console.error("Folder error At: ");
+    console.error("Error: ", error, error.message);
     console.log("=============================");
     exit();
   }

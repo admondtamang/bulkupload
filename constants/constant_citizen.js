@@ -38,73 +38,43 @@ const DOUCMENT_INDICIES = {
     37: "Phone number ",
 };
 
-const DOCUMENT_TYPE = {
-    1: {
-        name: "Individual",
+// used for adding indexes to attachment and document
+const CITIZEN_DOCUMENTS = {
+    INDIVIDUAL: {
+        name: 'INDIVIDUAL',
+        value: 1,
         documentIndex: [
             {
                 documentIndexId: 28,
+                name: 'AccountName'
             },
             {
                 documentIndexId: 29,
+                name: 'AccountNumber'
             }, {
                 documentIndexId: 30,
+                name: 'CifId'
             }, {
                 documentIndexId: 31,
+                name: 'BranchCode'
             }, {
                 documentIndexId: 32,
+                name: 'CustDob',
+                validation: { date: true }
+
             },
         ],
     },
-    3: "KYC",
-    4: "IDENTIFICATION DOCUMENT",
-    10: "AOF", //  individual
-    2: "CORPORATE",
-    5: "SIGNATURE CARD",
-    6: "KYC",
-    7: "IDENTIFICATION DOCUMENT",
-    8: "COMPANY DOCUMENTS",
-    9: "TAX CLEARANCE/AUDIT REPORT ",
-    11: "AOF"
-};
-// const DOCUMENT_TYPE = {
-//     1: "INDIVIDUAL",
-//     3: "KYC",
-//     4: "IDENTIFICATION DOCUMENT",
-//     10: "AOF", //  individual
-//     2: "CORPORATE",
-//     5: "SIGNATURE CARD",
-//     6: "KYC",
-//     7: "IDENTIFICATION DOCUMENT",
-//     8: "COMPANY DOCUMENTS",
-//     9: "TAX CLEARANCE/AUDIT REPORT ",
-//     11: "AOF"
-// };
-
-const responseData = {
-    AccountName: 28,
-    AccountNumber: "0010100002494011",
-    BranchCode: 31,
-    BranchName: "DURBARMARG BRANCH",
-    CifId: "R000362731",
-    CustDob: "09/30/1991 00:00:00",
-    GrandfathersName: "TUK PRASAD ADHIKARI",
-    FathersName: "BALARAM SHRAMA ADHIKARI",
-    PhoneNum: "9846169746",//
-    IdentifcationDocument: "CTZN",
-    IdNumber: "461002/1248",
-    PlaceOfIssue: "KASKI",
-    DocExpiryDate: null,//
-    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-};
-
-const CITIZEN_DOCUMENTS = {
     0001: {
         name: "AOF",
         value: 10,
         documentIndex: [{
             documentIndexId: 26,
             name: 'IdNumber',
+            validation: {
+
+                defaultValue: 1
+            }
         },
         ]
     },
@@ -127,33 +97,32 @@ const CITIZEN_DOCUMENTS = {
         name: "IDENTIFICATION DOCUMENT",
         value: 4,
         documentIndex: [{
-            documentIndexId: 4, // static
+            documentIndexId: 4,
             name: 'IdentificationDocument'
         }, {
-            documentIndexId: 5, // static
+            documentIndexId: 5,
             name: 'IdNumber'
         }, {
-            documentIndexId: 6, // static
+            documentIndexId: 6,
             name: 'PlaceOfIssue',
             validation: { table: 'district' }
         }, {
-            documentIndexId: 7, // static
+            documentIndexId: 7,
             name: 'CustDob',
-            validation: { date: 'date' }
-
+            validation: { date: true }
         }, {
-            documentIndexId: 8, // static
+            documentIndexId: 8,
             name: 'DocExpiryDate',
-            validation: { date: 'date' }
+            validation: { date: true }
 
         },
         ]
     },
-    0004:{
-        name:"OTHERS",
-        value:12,
+    0004: {
+        name: "OTHERS",
+        value: 12,
         documentIndex: []
     }
 }
 
-module.exports = { DOUCMENT_INDICIES, DOCUMENT_TYPE, responseData, CITIZEN_DOCUMENTS };
+module.exports = { DOUCMENT_INDICIES, CITIZEN_DOCUMENTS };
