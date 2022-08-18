@@ -69,7 +69,7 @@ async function sendDataToDMS(attachments, document_name, path) {
   // Send request to DMS
   const doc = {
     identifier: getIdentifier(),
-    otherTitle: api_result.AccountNumber + "-" + api_result.AccountName,
+    otherTitle: api_result.AccountName + "-" + api_result.AccountNumber,
     documentTypeId: CITIZEN_DOCUMENTS.INDIVIDUAL.value,
     branchId: 42,
     sendToChecker: false,
