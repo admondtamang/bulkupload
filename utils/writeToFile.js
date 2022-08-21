@@ -4,14 +4,24 @@ const fs = require("fs");
  * @param {String} content
  * @param {String} location
  */
-function writeToFile(content, location = "test.txt") {
-  fs.writeFile(location, JSON.stringify(content), (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log("File write success", location);
-  });
+function writeToFile(content, location = "test.txt", append) {
+
+  if (append)
+    fs.appendFileSync(location, JSON.stringify(content), (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log("File write success", location);
+    });
+  else
+    fs.writeFile(location, JSON.stringify(content), (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log("File write success", location);
+    });
 }
 
 module.exports = writeToFile;

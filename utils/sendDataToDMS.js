@@ -8,8 +8,8 @@ const { login } = require("./api/login");
 const writeToFile = require("./writeToFile");
 const moment = require("moment");
 const { validateIndexes } = require("./validations");
+const { dms_url } = require("./config");
 
-const url = "http://localhost:8181/api/attachment/bulk-attachment-upload";
 
 /**
  *
@@ -33,7 +33,7 @@ async function sendDataToDMS(attachments, document_name, path) {
   // Get data from channel manager  
   // const api_result = await channelManager(document_name);
   const api_result = {
-    AccountName: 'Ramesh thapalia',
+    AccountName: 'Getta thapalia',
     AccountNumber: "0010100002494011",
     BranchCode: 31,
     BranchName: "DURBARMARG BRANCH",
@@ -88,28 +88,31 @@ async function sendDataToDMS(attachments, document_name, path) {
     try {
       ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)].documentIndex;
       parent_doc = CITIZEN_DOCUMENTS?.[parseInt(doc_type)]
+
+      // document indexes mapped with document types.
+      const documentIndicies = ctzn_docs.map(element => {
+        let value = api_result?.[element.name]
+
+        if (element?.validation && value) {
+          value = validateIndexes(element, value)
+        }
+
+        return { documentIndexId: element.documentIndexId, value: value || "" };
+      })
+
+      row.documentIndex = documentIndicies
+      row.documentTypeId = parent_doc.value
+
+      return row;
     } catch (error) {
-      console.log("Not defined in constant. ", doc_type)
-      console.log(error);
-      exit()
+      console.log("Not defined in constant. [Ignore error]", doc_type, filename)
+      console.log(error.message, error);
+      writeToFile({ path, message: error.message }, 'erorFile.txt', true)
+      // exit()
 
     }
 
-    // document indexes mapped with document types.
-    const documentIndicies = ctzn_docs.map(element => {
-      let value = api_result?.[element.name]
 
-      if (element?.validation && value) {
-        value = validateIndexes(element, value)
-      }
-
-      return { documentIndexId: element.documentIndexId, value: value || "" };
-    })
-
-    row.documentIndex = documentIndicies
-    row.documentTypeId = parent_doc.value
-
-    return row;
   });
 
 
@@ -139,7 +142,7 @@ async function sendDataToDMS(attachments, document_name, path) {
 
     const { data } = await axios({
       method: "post",
-      url: url,
+      url: dms_url,
       data: JSON.stringify(form_data),
       maxContentLength: Infinity,
       maxBodyLength: Infinity,

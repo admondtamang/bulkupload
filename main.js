@@ -21,8 +21,30 @@ const Basic_bulkupload = async (path) => {
 // mutltiple folder upload
 const Multiple_bulkupload = async () => {
     const numberOfFolders = 3 //128
+    let x = 0,
+        y = 0,
+        z = 0,
+        i, num;
+
     for (i = 1; i <= numberOfFolders; i++) {
-        await Basic_bulkupload(folder_path + i);
+        z++;
+
+        if (z > 9) {
+            y++;
+            z = 0;
+        }
+
+        if (y > 9) {
+            x++;
+            y = 0;
+        }
+
+        x = x.toString();
+
+        num = x + y + z
+
+        console.log("Path: ", folder_path + num);
+        await Basic_bulkupload(folder_path + num);
     }
 
 }

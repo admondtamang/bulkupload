@@ -3,6 +3,7 @@ const moment = require("moment");
 const fs = require("fs-extra");
 const { folder_path } = require("./config");
 const { exit } = require("process");
+const writeToFile = require("./writeToFile");
 /**
  * Display object
  *
@@ -30,14 +31,21 @@ function moveDirectory(dir_name, path) {
   const sourceDir = folder + "/" + dir_name;
   const destDir = folder + "/success/" + dir_name;
 
-  fs.move(sourceDir, destDir, (err) => {
-    if (err) {
-      console.log(folder, "====");
-      console.error(err);
-      exit()
-    }
-    console.log("success!");
-  });
+  try {
+    fs.move(sourceDir, destDir, (err) => {
+      if (err) {
+        console.log(folder, "====");
+        console.error(err);
+        exit()
+      }
+      console.log("success!");
+    });
+
+  } catch (error) {
+    const content = "Cannot move: " + sourceDir
+    writeToFile(content, "error.txt");
+    console.log(content);
+  }
 }
 
 /**
