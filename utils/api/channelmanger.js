@@ -2,7 +2,7 @@ const { default: axios } = require("axios");
 const { exit } = require("process");
 const { Encrypt } = require("../crypto");
 
-const url = "http://192.168.76.17:60064/api/RetailCtznDms/RetailCtznDmsReq";
+const url = "http://192.168.82.80:8088/api/RetailCtznDms/RetailCtznDmsReq";
 
 /**
  *
@@ -20,9 +20,9 @@ async function channelManager(accountNumber) {
       headers: {
         'Content-Type': 'application/json',
         'AuthKey':
-          "a7aa2f507fae41c3d32f0e7ff1b9cbf5838e9a887049c4337904857d714bfd9af3ad3bfe4cc08cd9462a30546a4529df73b176f1dfac326075bd0ac561201fc0",
+          "fef050171efc46c03d237bc467cae61d07b10809d3c93889afe2c2a5a5fcfd1e846c1ae41be5f8aae22ff93de8008299bf27d9a67495ff30c91e8699a40e49bf",
         'Authorization':
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2hpc2ggdGhhc3MiLCJlbWFpbCI6ImFzaGlzaEBnZW5lcmFsdGVjaG5vbG9neS5jb20ubnAiLCJiaXJ0aGRhdGUiOiIwMDAxLTAxLTAxIiwianRpIjoiOTJkYjRhNjYtNzUzNi00NTIzLWExNjMtODIzMjlhOTFiZTAzIiwiZXhwIjoxNjU1ODA1ODUwLCJpc3MiOiJnZW50ZWNoIiwiYXVkIjoiZ2xvYmFsIn0.HZZvjmONsUpA7tjzcG2SpfjKDz3LMEI2v0HwUAF4ySg",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2hpc2ggdGhhc3MiLCJlbWFpbCI6ImFzaGlzaEBnZW5lcmFsdGVjaG5vbG9neS5jb20ubnAiLCJiaXJ0aGRhdGUiOiIwMDAxLTAxLTAxIiwianRpIjoiNDVhZjM0ZmEtOWEzMC00ODFkLWIxNmItMDAyMWFkYzY0MDRlIiwiZXhwIjoxNjYxMjI4NDM5LCJpc3MiOiJnZW50ZWNoIiwiYXVkIjoiZ2xvYmFsIn0.3Kzz90Mq8aXA8Uaz9S0_CWKOAEXkLai98FFz8FgTRoA",
       },
     });
     console.log(JSON.parse(data.data).Data);
@@ -31,7 +31,7 @@ async function channelManager(accountNumber) {
   } catch (error) {
     console.log("=============================");
     console.error("Channel manager Error ");
-    console.error("Error: ", error.message);
+    console.error("Error: ", error);
     console.log("=============================");
 
     exit();

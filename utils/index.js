@@ -18,29 +18,32 @@ function printObject(obj) {
  *
  * @param {string} dir_name
  */
-function moveDirectory(dir_name, path) {
+async function moveDirectory(dir_name, path) {
   let folder = folder_path
   if (path)
     folder = path
 
   // create success dir if not created
   if (!fs.existsSync(folder + "/success")) {
-    fs.mkdirSync(folder + "/success");
+  await  fs.mkdirSync(folder + "/success");
   }
 
   const sourceDir = folder + "/" + dir_name;
   const destDir = folder + "/success/" + dir_name;
 
   try {
-    fs.move(sourceDir, destDir, (err) => {
+   await fs.moveSync(sourceDir, destDir, (err) => {
       if (err) {
         console.log(folder, "====");
         console.error(err);
         exit()
       }
-      console.log("success!");
+      
     });
 
+    await writeToFile(sourceDir, "success.txt");
+
+    console.log(sourceDir," = Move to success folder");
   } catch (error) {
     const content = "Cannot move: " + sourceDir
     writeToFile(content, "error.txt");
@@ -54,7 +57,7 @@ function moveDirectory(dir_name, path) {
  * @param {*} tag
  * @returns
  */
-const getIdentifier = (tag = "GDMS") => {
+function getIdentifier(tag = "GDMS")  {
   return tag + "-" + moment().format("YYYY-MM-DD") + "-" + Date.now();
 };
 

@@ -1,6 +1,6 @@
 const executeFindFiles = require("./findFiles");
 const resolvePromisesSeq = require("./utils/resolvePromiseSeq");
-const { folder_path } = require("./utils/config");
+const { folder_path, numberOfFolders, initialNumberOfFolder } = require("./utils/config");
 
 
 // Single folder upload
@@ -20,13 +20,12 @@ const Basic_bulkupload = async (path) => {
 
 // mutltiple folder upload
 const Multiple_bulkupload = async () => {
-    const numberOfFolders = 3 //128
     let x = 0,
         y = 0,
         z = 0,
         i, num;
 
-    for (i = 1; i <= numberOfFolders; i++) {
+    for (i = initialNumberOfFolder; i <= numberOfFolders; i++) {
         z++;
 
         if (z > 9) {

@@ -8,8 +8,7 @@ const { login } = require("./api/login");
 const writeToFile = require("./writeToFile");
 const moment = require("moment");
 const { validateIndexes } = require("./validations");
-const { dms_url } = require("./config");
-
+const { dms_url, retriveDoc } = require("./config");
 
 /**
  *
@@ -19,102 +18,86 @@ const { dms_url } = require("./config");
  */
 async function sendDataToDMS(attachments, document_name, path) {
   try {
-
     // get file name
     // document_name = document_name.split("\\")[1];
-    document_name = document_name.split('\\').pop()
-
+    document_name = document_name.split("\\").pop();
   } catch (error) {
     console.log("Error== Folder name - cannot extract account number");
     console.log(error);
-    exit()
+    exit();
   }
 
-  // Get data from channel manager  
-  // const api_result = await channelManager(document_name);
-  const api_result = {
-    AccountName: 'Getta thapalia',
-    AccountNumber: "0010100002494011",
-    BranchCode: 31,
-    BranchName: "DURBARMARG BRANCH",
-    CifId: "R000362731",
-    CustDob: "09/30/1991 00:00:00",
-    GrandfathersName: "TUK PRASAD ADHIKARI",
-    FathersName: "BALARAM SHRAMA ADHIKARI",
-    PhoneNum: "9846169746",//
-    IdentificationDocument: "CTZN",
-    IdNumber: "461002/1248",
-    PlaceOfIssue: "KASKI",
-    DocExpiryDate: null,//
-    IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
-  };
-
-
+  // Get data from channel manager
+  const api_result = await channelManager(document_name);
+  // const api_result = {
+  //   AccountName: "Getta thapalia",
+  //   AccountNumber: "0010100002494011",
+  //   BranchCode: 31,
+  //   BranchName: "DURBARMARG BRANCH",
+  //   CifId: "R000362731",
+  //   CustDob: "09/30/1991 00:00:00",
+  //   GrandfathersName: "TUK PRASAD ADHIKARI",
+  //   FathersName: "BALARAM SHRAMA ADHIKARI",
+  //   PhoneNum: "9846169746", //
+  //   IdentificationDocument: "CTZN",
+  //   IdNumber: "461002/1248",
+  //   PlaceOfIssue: "KASKI",
+  //   DocExpiryDate: null, //
+  //   IdIssueOrganization: "DISTRICT ADMINISTRATION OFFICE",
+  // };
 
   // document index for document
-  const documentIndex = CITIZEN_DOCUMENTS.INDIVIDUAL.documentIndex.map(row => {
-
-    let value = api_result?.[row.name]
+  const documentIndex = CITIZEN_DOCUMENTS.INDIVIDUAL.documentIndex.map((row) => {
+    let value = api_result?.[row.name];
 
     if (row?.validation && value) {
-      value = validateIndexes(row, value)
+      value = validateIndexes(row, value);
     }
 
     return {
-      documentIndexId: row.documentIndexId, value: value || ""
+      documentIndexId: row.documentIndexId,
+      value: value || "",
     };
-  })
+  });
 
-
-  // Send request to DMS
-  const doc = {
-    identifier: getIdentifier(),
-    otherTitle: api_result.AccountName + "-" + api_result.AccountNumber,
-    documentTypeId: CITIZEN_DOCUMENTS.INDIVIDUAL.value,
-    branchId: 42,
-    sendToChecker: false,
-    hierarchy: 'Branch_42',
-    documentIndex
-  }
-
-
+  const doc = retriveDoc({ api_result, documentIndex });
 
   // Add indicies in attachments
   attachments = attachments.map((row) => {
     const filename = row.name;
     const doc_type = filename.substring(filename.lastIndexOf("_") + 1, filename.length).split(".")[0];
 
-    let ctzn_docs = [], parent_doc = {}
+    let ctzn_docs = [],
+      parent_doc = {},
+      temp_indicies;
     try {
-      ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)].documentIndex;
-      parent_doc = CITIZEN_DOCUMENTS?.[parseInt(doc_type)]
+      ctzn_docs = CITIZEN_DOCUMENTS?.[parseInt(doc_type)]?.documentIndex;
+      parent_doc = CITIZEN_DOCUMENTS?.[parseInt(doc_type)];
 
       // document indexes mapped with document types.
-      const documentIndicies = ctzn_docs.map(element => {
-        let value = api_result?.[element.name]
+      const documentIndicies = ctzn_docs.map((element) => {
+        let value = api_result?.[element.name];
 
         if (element?.validation && value) {
-          value = validateIndexes(element, value)
+          value = validateIndexes(element, value);
         }
 
         return { documentIndexId: element.documentIndexId, value: value || "" };
-      })
+      });
 
-      row.documentIndex = documentIndicies
-      row.documentTypeId = parent_doc.value
+      row.documentIndex = documentIndicies;
+      temp_indicies = documentIndicies;
+      row.documentTypeId = parent_doc.value;
 
       return row;
     } catch (error) {
-      console.log("Not defined in constant. [Ignore error]", doc_type, filename)
+      writeToFile({ filename, path, message: error?.message }, "erorFile.txt", true);
+      console.log("Not defined in constant. [Ignore error]", temp_indicies, doc_type, filename);
       console.log(error.message, error);
-      writeToFile({ path, message: error.message }, 'erorFile.txt', true)
-      // exit()
-
     }
-
-
   });
 
+  attachments = attachments.filter((row) => row != undefined || row != null);
 
   // Payload for dms api
   const form_data = {
@@ -133,8 +116,10 @@ async function sendDataToDMS(attachments, document_name, path) {
   const token = await login();
 
   // payload send to dms
-  writeToFile(form_data);
+  writeToFile(form_data, "body.txt");
   writeToFile(token, "token.txt");
+
+  console.log("Api call to DMS");
 
   // api call to dms
   try {
@@ -152,17 +137,20 @@ async function sendDataToDMS(attachments, document_name, path) {
       },
     });
 
-    console.log("Document Upload Success");
+    console.log("Document Upload to DMS");
     // Move Directory to succes
     // exit()
-    if (data == "Success!") moveDirectory(document_name, path);
-    console.log("=============================");
-
-
+    if (data == "Success!") {
+      await moveDirectory(document_name, path);
+      console.log("finish=============================");
+    }
   } catch (error) {
     console.log("=============================");
     console.error("Folder error At: ");
     console.error("Error: ", error, error.message);
+
+    writeToFile({ error: error.message, document_name, attachmentLength: attachments.length }, "dms_error.txt");
+
     console.log("=============================");
     exit();
   }

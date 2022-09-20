@@ -15,7 +15,7 @@ function writeToFile(content, location = "test.txt", append) {
       console.log("File write success", location);
     });
   else
-    fs.writeFile(location, JSON.stringify(content), (err) => {
+    fs.writeFileSync(location, JSON.stringify(content), (err) => {
       if (err) {
         console.error(err);
         return;
