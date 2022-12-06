@@ -11,7 +11,7 @@ const url = "http://192.168.82.80:8088/api/RetailCtznDms/RetailCtznDmsReq";
 async function channelManager(accountNumber) {
   try {
     const payload = await Encrypt(`{"TransactionId": "RCD-11","AccountNumber": "${accountNumber}"}`);
-    console.log("Connecting with Bank API through Channel Manager API ",payload,accountNumber)
+    console.log("Connecting with Bank API through Channel Manager API ")
 
     const { data } = await axios({
       method: "post",
@@ -25,7 +25,7 @@ async function channelManager(accountNumber) {
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhc2hpc2ggdGhhc3MiLCJlbWFpbCI6ImFzaGlzaEBnZW5lcmFsdGVjaG5vbG9neS5jb20ubnAiLCJiaXJ0aGRhdGUiOiIwMDAxLTAxLTAxIiwianRpIjoiNDVhZjM0ZmEtOWEzMC00ODFkLWIxNmItMDAyMWFkYzY0MDRlIiwiZXhwIjoxNjYxMjI4NDM5LCJpc3MiOiJnZW50ZWNoIiwiYXVkIjoiZ2xvYmFsIn0.3Kzz90Mq8aXA8Uaz9S0_CWKOAEXkLai98FFz8FgTRoA",
       },
     });
-    console.log(JSON.parse(data.data).Data);
+    console.log(JSON.stringify(JSON.parse(data.data).Data));
 
     return JSON.parse(data.data).Data
   } catch (error) {

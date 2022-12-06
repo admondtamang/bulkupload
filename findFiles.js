@@ -1,13 +1,9 @@
 const path = require("path");
-const excludeFileTypes = [".exe", ".DS_Store", "success"];
+const excludeFileTypes = [".exe", ".DS_Store", "success","failure"];
 const fs = require("fs-extra");
 const { base64_encode } = require("./utils/createBase64");
-
-var attachments = [];
-var result = [],
-  document_name = "",
-  document = {},
-  count = 0;
+const writeToFile = require("./utils/writeToFile");
+const { limit } = require("./utils/config");
 
 /**
  *
@@ -17,14 +13,15 @@ var result = [],
  * @returns list of documents with attachment.
  */
 async function executeFindFiles(name) {
-  attachments = [];
-  result = [],
+
+  let attachments = [];
+  let result = [],
     document_name = "",
     document = {},
     count = 0;
+  
   await findFiles(name);
-  return result;
-}
+
 
 /**
  *
@@ -38,6 +35,8 @@ async function findFiles(folderName) {
   try {
     items = await fs.readdir(folderName, { withFileTypes: true });
   } catch (error) {
+     writeToFile(folderName, 'error/folder_not_found.txt', true)
+
     console.log("not a folder", error);
   }
 
@@ -46,6 +45,7 @@ async function findFiles(folderName) {
 
   // donot include file extension
   items = items.filter((row) => !excludeFileTypes.includes(row.name));
+  items=limit>0? items.splice(0,limit):items
 
   // File name
   document_name = folderName;
@@ -70,12 +70,21 @@ async function findFiles(folderName) {
             mimetype: "application/pdf",
           },
         };
+        
         attachments.push(attach);
+        // await writeToFile(attach.name, "attachments.txt",true);
+        
         result[count] = { ...document, attachments };
 
         console.log(`Found file: ${filePath} ${count} in folder: ${folderName}`);
       } else {
+        console.log(result.length);
+
+        // await writeToFile("=============================", "attachments.txt",true);
+        console.log("=============================");
+
         // find next folder if finish finding files
+        // if(result.length<=10)
         await findFiles(filePath);
       }
     })
@@ -85,9 +94,12 @@ async function findFiles(folderName) {
   attachments = [];
   document = {};
   count = count + 1;
+
   console.log("=============================");
   console.log("Finish Document ", folderName, count);
   console.log("=============================");
+}
+return result;
 }
 
 module.exports = executeFindFiles;
